@@ -1,8 +1,10 @@
+//transactionList.js component displays all transactions and allows user to filter through
+//contains the chart component from chart.js to display vendor info
 import React, { useEffect, useState } from "react";
 import { fetchTransactions } from "../services/fetchStats";
 import "./transactionList.css"; // Import the CSS file for styling
 
-// format date for display
+//date formatting
 const formatDateTime = (timestamp) => {
     const date = timestamp.toDate();
     const day = String(date.getDate()).padStart(2, "0");
@@ -14,6 +16,7 @@ const formatDateTime = (timestamp) => {
     return `${day}/${month}/${year} ${hours}:${minutes}`;
 };
 
+//transaction list component
 const TransactionList = () => {
     const [transactions, setTransactions] = useState([]);
     const [exhibitorName, setExhibitorName] = useState("");
@@ -33,17 +36,21 @@ const TransactionList = () => {
         fetchData();
     }, []);
 
-    // Filter transactions based on exhibitorName, wineName, and attendeeId
+    //drop down values
+    const uniqueExhibitors = [
+        ...new Set(
+            transactions.map((transaction) => transaction.exhibitorName)
+        ),
+    ];
+    const uniqueWines = [
+        ...new Set(transactions.map((transaction) => transaction.wineName)),
+    ];
+
+    //filter transactions based on exhibitorName, wineName, and attendeeId
     const filteredTransactions = transactions.filter((transaction) => {
         return (
-            (!exhibitorName ||
-                transaction.exhibitorName
-                    .toLowerCase()
-                    .includes(exhibitorName.toLowerCase())) &&
-            (!wineName ||
-                transaction.wineName
-                    .toLowerCase()
-                    .includes(wineName.toLowerCase())) &&
+            (!exhibitorName || transaction.exhibitorName === exhibitorName) &&
+            (!wineName || transaction.wineName === wineName) &&
             (!attendeeId ||
                 transaction.attendeeId
                     .toLowerCase()
@@ -59,21 +66,31 @@ const TransactionList = () => {
             <div className="filters-container">
                 <label>
                     Filter by Exhibitor Name:
-                    <input
-                        type="text"
+                    <select
                         value={exhibitorName}
                         onChange={(e) => setExhibitorName(e.target.value)}
-                        placeholder="Enter exhibitor name"
-                    />
+                    >
+                        <option value="">All Exhibitors</option>
+                        {uniqueExhibitors.map((exhibitor, index) => (
+                            <option key={index} value={exhibitor}>
+                                {exhibitor}
+                            </option>
+                        ))}
+                    </select>
                 </label>
                 <label>
                     Filter by Wine Name:
-                    <input
-                        type="text"
+                    <select
                         value={wineName}
                         onChange={(e) => setWineName(e.target.value)}
-                        placeholder="Enter wine name"
-                    />
+                    >
+                        <option value="">All Wines</option>
+                        {uniqueWines.map((wine, index) => (
+                            <option key={index} value={wine}>
+                                {wine}
+                            </option>
+                        ))}
+                    </select>
                 </label>
                 <label>
                     Filter by Attendee ID:
