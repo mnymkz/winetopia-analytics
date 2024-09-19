@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchTransactions } from "../services/fetchStats";
 import "./transactionList.css"; // Import the CSS file for styling
+import Charts from "./charts";
 
 //date formatting
 const formatDateTime = (timestamp) => {
@@ -62,7 +63,7 @@ const TransactionList = () => {
         <div className="centered-container">
             <h2>Winetopia 2024 Event Transactions</h2>
 
-            {/* Filter inputs */}
+            {/* filter inputs */}
             <div className="filters-container">
                 <label>
                     Filter by Exhibitor Name:
@@ -103,7 +104,7 @@ const TransactionList = () => {
                 </label>
             </div>
 
-            {/* Table for filtered list of transactions */}
+            {/* Table of transactions */}
             <div className="table-container">
                 <table>
                     <thead>
@@ -134,6 +135,12 @@ const TransactionList = () => {
                     </tbody>
                 </table>
             </div>
+
+            {/* Charts */}
+            <Charts
+                transactions={filteredTransactions}
+                exhibitorName={exhibitorName}
+            />
         </div>
     );
 };

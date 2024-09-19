@@ -1,4 +1,4 @@
-/* transactionList.css */
+/* GPT GENERATED CSS */
 
 /* Center the heading and filter inputs */
 .centered-container {
@@ -20,12 +20,16 @@
     margin: 0 1rem; /* Adjust spacing around labels */
 }
 
+/* Table container: Set height to make it scrollable */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Enable horizontal scroll if needed */
+    max-height: 460px; /* Set a max height to make the table scrollable */
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
     margin-top: 1rem;
 }
 
+/* General table styling */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -38,6 +42,24 @@ td {
     border: 1px solid #ddd;
 }
 
+/* Sticky header */
 th {
     background-color: #f4f4f4;
+    position: sticky;
+    top: 0; /* Stick the header to the top */
+    z-index: 1; /* Ensure the header is above the scrolling content */
+}
+
+/* Optional: Add horizontal scroll if the table is wider than the container */
+@media (max-width: 600px) {
+    .table-container {
+        max-width: 100%; /* Allow the container to adapt to smaller screens */
+    }
+}
+.chart-container {
+    width: 80%; /* Restrict width */
+    max-width: 1000px; /* Max width to prevent large charts */
+    height: 500px; /* Set a fixed height */
+    margin: 1rem auto; /* Add some margin for spacing */
+    padding-bottom: 0%;
 }
