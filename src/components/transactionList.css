@@ -1,0 +1,54 @@
+/* TransactionList.css */
+
+/* Container for the table */
+.table-container {
+    margin: 20px 0;
+    overflow-x: auto; /* Allow horizontal scrolling if the table is too wide */
+}
+
+/* Style the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Style table headers */
+thead th {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+    text-align: left;
+}
+
+/* Style table rows and cells */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+tbody td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Style filter inputs */
+div > label {
+    display: block;
+    margin: 10px 0;
+}
+
+input[type="text"] {
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
