@@ -1,0 +1,35 @@
+/* summaryMetrics.css */
+.summary-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.metric {
+    margin: 1rem 0;
+}
+
+.metric-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.metric-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+}

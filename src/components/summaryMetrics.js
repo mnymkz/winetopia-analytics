@@ -1,60 +1,93 @@
-// summary metrics returns a div containing summary metrics
 import React, { useEffect, useState } from "react";
 import {
     fetchTotalTransactions,
     fetchTotalExhibitors,
     fetchTotalWines,
-    fetchTotalRevenue,
-    fetchTotalTokens,
-    fetchSilverTokens,
-    fetchGoldTokens,
-    fetchSilverRevenue,
-    fetchGoldRevenue,
+    fetchTotalSilverTokens,
+    fetchTotalGoldTokens,
 } from "../services/fetchStats";
+import "./summaryMetrics.css"; // Import the CSS file for styling
 
 const SummaryMetrics = () => {
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [totalExhibitors, setTotalExhibitors] = useState(0);
     const [totalWines, setTotalWines] = useState(0);
-    const [totalTokens, setTotalTokens] = useState(0);
     const [totalSilverTokens, setTotalSilverTokens] = useState(0);
     const [totalGoldTokens, setTotalGoldTokens] = useState(0);
-    const [totalRevenue, setTotalRevenue] = useState(0);
-    const [totalSilverRevenue, setTotalSilverRevenue] = useState(0);
-    const [totalGoldRevenue, setTotalGoldRevenue] = useState(0);
+
+    // Calculate metrics
+    const totalTokens = totalSilverTokens + totalGoldTokens;
+    const totalSilverRevenue = totalSilverTokens;
+    const totalGoldRevenue = totalGoldTokens * 5;
+    const totalRevenue = totalSilverRevenue + totalGoldRevenue;
 
     useEffect(() => {
-        // Fetch all summary metrics data when the component mounts
         const fetchData = async () => {
             try {
                 const transactions = await fetchTotalTransactions();
                 const exhibitors = await fetchTotalExhibitors();
                 const wines = await fetchTotalWines();
-                const totalTokens = await fetchTotalTokens();
-                const totalSilverTokens = await fetchSilverTokens();
-                const totalGoldTokens = await fetchGoldTokens();
-                const totalRevenue = await fetchTotalRevenue();
-                const totalSilverRevenue = await fetchSilverRevenue();
-                const totalGoldRevenue = await fetchGoldRevenue();
+                const silverTokens = await fetchTotalSilverTokens();
+                const goldTokens = await fetchTotalGoldTokens();
 
                 setTotalTransactions(transactions);
                 setTotalExhibitors(exhibitors);
                 setTotalWines(wines);
-                setTotalTokens(totalTokens);
-                setTotalSilverTokens(totalSilverTokens);
-                setTotalGoldTokens(totalGoldTokens);
-                setTotalRevenue(totalRevenue);
-                setTotalSilverRevenue(totalSilverRevenue);
-                setTotalGoldRevenue(totalGoldRevenue);
+                setTotalSilverTokens(silverTokens);
+                setTotalGoldTokens(goldTokens);
             } catch (error) {
-                console.error("Error fetching summary metrics: ", error);
+                console.error("Error fetching summary metrics:", error);
             }
         };
 
         fetchData();
     }, []);
 
-    return <div></div>;
+    return (
+        <div className="summary-container">
+            <h2>Overall Summary</h2>
+            <div className="metric-group">
+                <div className="metric">
+                    <div className="metric-title">Total Transactions</div>
+                    <div className="metric-value">{totalTransactions}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Exhibitors</div>
+                    <div className="metric-value">{totalExhibitors}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Wines</div>
+                    <div className="metric-value">{totalWines}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">
+                        Total Silver Tokens Spent
+                    </div>
+                    <div className="metric-value">{totalSilverTokens}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Gold Tokens Spent</div>
+                    <div className="metric-value">{totalGoldTokens}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Tokens Spent</div>
+                    <div className="metric-value">{totalTokens}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Silver Revenue</div>
+                    <div className="metric-value">${totalSilverRevenue}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Gold Revenue</div>
+                    <div className="metric-value">${totalGoldRevenue}</div>
+                </div>
+                <div className="metric">
+                    <div className="metric-title">Total Revenue</div>
+                    <div className="metric-value">${totalRevenue}</div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default SummaryMetrics;

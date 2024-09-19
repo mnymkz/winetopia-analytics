@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchTransactions } from "../services/fetchStats";
 import "./transactionList.css"; // Import the CSS file for styling
 
-//format date for display
+// format date for display
 const formatDateTime = (timestamp) => {
     const date = timestamp.toDate();
     const day = String(date.getDate()).padStart(2, "0");
@@ -18,6 +18,7 @@ const TransactionList = () => {
     const [transactions, setTransactions] = useState([]);
     const [exhibitorName, setExhibitorName] = useState("");
     const [wineName, setWineName] = useState("");
+    const [attendeeId, setAttendeeId] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,7 +33,7 @@ const TransactionList = () => {
         fetchData();
     }, []);
 
-    // Filter transactions based on exhibitorName and wineName
+    // Filter transactions based on exhibitorName, wineName, and attendeeId
     const filteredTransactions = transactions.filter((transaction) => {
         return (
             (!exhibitorName ||
@@ -42,16 +43,20 @@ const TransactionList = () => {
             (!wineName ||
                 transaction.wineName
                     .toLowerCase()
-                    .includes(wineName.toLowerCase()))
+                    .includes(wineName.toLowerCase())) &&
+            (!attendeeId ||
+                transaction.attendeeId
+                    .toLowerCase()
+                    .includes(attendeeId.toLowerCase()))
         );
     });
 
     return (
-        <div>
-            <h2>Transaction List</h2>
+        <div className="centered-container">
+            <h2>Winetopia 2024 Event Transactions</h2>
 
             {/* Filter inputs */}
-            <div>
+            <div className="filters-container">
                 <label>
                     Filter by Exhibitor Name:
                     <input
@@ -68,6 +73,15 @@ const TransactionList = () => {
                         value={wineName}
                         onChange={(e) => setWineName(e.target.value)}
                         placeholder="Enter wine name"
+                    />
+                </label>
+                <label>
+                    Filter by Attendee ID:
+                    <input
+                        type="text"
+                        value={attendeeId}
+                        onChange={(e) => setAttendeeId(e.target.value)}
+                        placeholder="Enter attendee ID"
                     />
                 </label>
             </div>
@@ -96,11 +110,7 @@ const TransactionList = () => {
                                     {transaction.isGoldPurchase ? "Yes" : "No"}
                                 </td>
                                 <td>
-                                    <td>
-                                        {formatDateTime(
-                                            transaction.purchaseTime
-                                        )}
-                                    </td>
+                                    {formatDateTime(transaction.purchaseTime)}
                                 </td>
                             </tr>
                         ))}

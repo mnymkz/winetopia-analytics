@@ -1,5 +1,18 @@
 import { db } from "../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import {
+    collection,
+    getDocs,
+    getFirestore,
+    query,
+    where,
+} from "firebase/firestore";
+
+//fetch the total number of attendees
+export const fetchTotalAttendees = async () => {
+    const attendeeCollection = collection(db, "attendee");
+    const attendeeSnapshot = await getDocs(attendeeCollection);
+    return attendeeSnapshot.size || 0;
+};
 
 //fetch the number of total transactions
 export const fetchTotalTransactions = async () => {
@@ -20,6 +33,17 @@ export const fetchTotalWines = async () => {
     const wineCollection = collection(db, "wine");
     const wineSnapshot = await getDocs(wineCollection);
     return wineSnapshot.size || 0;
+};
+
+//fetch all attendees from the collection
+export const fetchAttendees = async () => {
+    const attendeeCollection = collection(db, "attendee");
+    const attendeeSnapshot = await getDocs(attendeeCollection);
+    const attendees = attendeeSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+    }));
+    return attendees;
 };
 
 //fetch all the transactions from the collection
@@ -56,65 +80,44 @@ export const fetchWines = async () => {
     return wines;
 };
 
-//return total revenue
-export const fetchTotalRevenue = (transactions) => {
-    return transactions.reduce((total, transaction) => {
-        const revenue = transaction.isGoldPurchase
-            ? 5 * transaction.cost //5x if gold
-            : transaction.cost; //else cost = 1
-        return total + revenue;
-    }, 0);
+export const fetchTotalSilverTokens = async () => {
+    const db = getFirestore();
+    const transactionsRef = collection(db, "transaction");
+    const q = query(transactionsRef, where("isGoldPurchase", "==", false)); //if silver
+
+    try {
+        const querySnapshot = await getDocs(q); // Fetch documents
+        let totalSilverTokens = 0;
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            totalSilverTokens += data.cost; // Add cost to total
+        });
+
+        return totalSilverTokens;
+    } catch (error) {
+        console.error("Error fetching total silver tokens: ", error);
+        return 0;
+    }
 };
 
-//return total silver token revenue
-export const fetchSilverRevenue = (transactions) => {
-    return transactions.reduce((total, transaction) => {
-        const revenue = !transaction.isGoldPurchase ? transaction.cost : 0;
-        return total + revenue;
-    }, 0);
-};
+export const fetchTotalGoldTokens = async () => {
+    const db = getFirestore();
+    const transactionsRef = collection(db, "transaction");
+    const q = query(transactionsRef, where("isGoldPurchase", "==", true)); //if gold
 
-//return total gold token revenue
-export const fetchGoldRevenue = (transactions) => {
-    return transactions.reduce((total, transaction) => {
-        const revenue = transaction.isGoldPurchase
-            ? 5 * transaction.cost //5x if gold
-            : 0; //else not updated
-        return total + revenue;
-    }, 0);
-};
+    try {
+        const querySnapshot = await getDocs(q); // Fetch documents
+        let totalGoldTokens = 0;
 
-//return token count
-export const fetchTotalTokens = (transactions) => {
-    return transactions.reduce(
-        (acc, transaction) => {
-            if (transaction.isGoldPurchase) {
-                acc.goldTokens += transaction.cost;
-            } else {
-                acc.silverTokens += transaction.cost;
-            }
-            return acc;
-        },
-        { goldTokens: 0, silverTokens: 0 } // Initial value for the accumulator
-    );
-};
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            totalGoldTokens += data.cost; // Add cost to total
+        });
 
-//return silver token count
-export const fetchSilverTokens = (transactions) => {
-    return transactions.reduce((acc, transaction) => {
-        if (!transaction.isGoldPurchase) {
-            acc += transaction.cost;
-        }
-        return acc;
-    }, 0);
-};
-
-//return gold token count
-export const fetchGoldTokens = (transactions) => {
-    return transactions.reduce((acc, transaction) => {
-        if (transaction.isGoldPurchase) {
-            acc += transaction.cost;
-        }
-        return acc;
-    }, 0);
+        return totalGoldTokens;
+    } catch (error) {
+        console.error("Error fetching total silver tokens: ", error);
+        return 0;
+    }
 };
